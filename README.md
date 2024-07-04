@@ -8,21 +8,21 @@ A simple lightweight store for React that allows you to manage your state in a g
 import Store, { useStoreState } from 'react-granular-store';
 
 const store = new Store({
-	count: 0,
+  count: 0,
 });
 
 export const useCount = () => useStoreState(store, 'count');
 
 export const App = () => {
-	const [count, setCount] = useCount();
-	const increment = () => setCount((prev) => prev + 1);
-	return (
-		<div>
-			<h1>{count}</h1>
-			<button onClick={increment}>Increment</button>
-			<button onClick={() => setCount(0)}>Reset</button>
-		</div>
-	);
+  const [count, setCount] = useCount();
+  const increment = () => setCount((prev) => prev + 1);
+  return (
+    <div>
+      <h1>{count}</h1>
+      <button onClick={increment}>Increment</button>
+      <button onClick={() => setCount(0)}>Reset</button>
+    </div>
+  );
 };
 ```
 
@@ -189,17 +189,20 @@ interface UserState {
   mary: User;
 }
 
+// Using the regular Store class
 const regularStore = new Store<UserState>({
   john: { name: 'John Doe', age: 30 },
   mary: { name: 'Mary Jane', age: 25 },
 });
 
-const john = recordStore.getState('john');
-const mary = recordStore.getState('mary');
+const john = regularStore.getState('john');
+const mary = regularStore.getState('mary');
 // These are of type User
-const scott = recordStore.getState('scott');
-// Type error: 'scott' does not exist in the state
+const scott = regularStore.getState('scott');
+// Type error: Argument of type '"scott"' is not assignable to parameter of type 'keyof UserState'.
 
+
+// Using the RecordStore class
 const recordStore = new RecordStore<User>({});
 
 recordStore.setState('john', { name: 'John Doe', age: 30 });
@@ -223,3 +226,5 @@ const UserDetails = ({ id }: { id: string }) => {
   );
 };
 ```
+
+Note: The `noUncheckedIndexedAccess` tsconfig option is required when using `RecordStore` otherwise the type returned will be `T` instead of `T | undefined`.

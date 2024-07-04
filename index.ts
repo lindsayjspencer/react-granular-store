@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type StateTree = Record<string | number | symbol, any>;
 
 export interface StoreOptions<State extends StateTree> {
@@ -15,7 +14,7 @@ const defaultOptions: Required<StoreOptions<StateTree>> = {
 
 export type SetStateArgument<T> = T | ((prev: T) => T);
 export default class Store<State extends StateTree> {
-	protected state: State;
+	public state: State;
 	private newState: Map<keyof State, State[keyof State]> = new Map();
 	private awaitingUpdate = false;
 	protected options = defaultOptions;
@@ -44,7 +43,6 @@ export default class Store<State extends StateTree> {
 	}
 
 	public getState<Key extends keyof State>(key: Key) {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		return this.state[key];
 	}
 
@@ -115,7 +113,6 @@ export function useStoreValue<State extends StateTree, Key extends keyof State>(
 		return () => unsubscribe();
 	}, [store, key]);
 
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	return state;
 }
 
@@ -152,7 +149,7 @@ export function useStoreState<State extends StateTree, Key extends keyof State>(
 	return [state, updateState] as const;
 }
 
-interface RecordStoreState<T> {
+export interface RecordStoreState<T> {
 	[key: string]: T;
 }
 
