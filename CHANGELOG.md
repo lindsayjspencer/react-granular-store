@@ -1,5 +1,11 @@
 # react-granular-store
 
+## 0.0.7
+
+### Patch Changes
+
+- 4690af7: Make RecordStore get return type properly undefined
+
 ## 0.0.6
 
 ### Patch Changes
