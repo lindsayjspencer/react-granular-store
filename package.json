@@ -10,7 +10,8 @@
     "manager",
     "hooks",
     "subscribe",
-    "useState"
+    "useState",
+	"front-end"
   ],
   "homepage": "https://github.com/lindsayjspencer/react-granular-store#readme",
   "repository": {

@@ -103,6 +103,8 @@ export function useStoreValue<State extends StateTree, Key extends keyof State>(
 	store: Store<State> | null,
 	key: Key,
 ): State[Key] | null;
+export function useStoreValue<T>(store: RecordStore<T>, key: string): T;
+export function useStoreValue<T>(store: RecordStore<T> | null, key: string): T | null;
 export function useStoreValue<State extends StateTree, Key extends keyof State>(store: Store<State> | null, key: Key) {
 	const [state, setState] = useState(store?.getState(key) ?? null);
 
@@ -123,6 +125,8 @@ export function useStoreUpdate<State extends StateTree, Key extends keyof State>
 	store: Store<State> | null,
 	key: Key,
 ): (newValue: SetStateArgument<State[Key]>) => void;
+export function useStoreUpdate<T>(store: RecordStore<T>, key: string): (newValue: SetStateArgument<T>) => void;
+export function useStoreUpdate<T>(store: RecordStore<T> | null, key: string): (newValue: SetStateArgument<T>) => void;
 export function useStoreUpdate<State extends StateTree, Key extends keyof State>(store: Store<State> | null, key: Key) {
 	return useCallback(
 		(newValue: SetStateArgument<State[Key]>) => {
@@ -141,6 +145,8 @@ export function useStoreState<State extends StateTree, Key extends keyof State>(
 	store: Store<State> | null,
 	key: Key,
 ): [State[Key] | null, (newValue: SetStateArgument<State[Key]>) => void];
+export function useStoreState<T>(store: RecordStore<T>, key: string): [T, (newValue: SetStateArgument<T>) => void];
+export function useStoreState<T>(store: RecordStore<T> | null, key: string): [T | null, (newValue: SetStateArgument<T>) => void];
 export function useStoreState<State extends StateTree, Key extends keyof State>(store: Store<State> | null, key: Key) {
 	const state = useStoreValue(store, key);
 	const updateState = useStoreUpdate(store, key);
@@ -149,7 +155,7 @@ export function useStoreState<State extends StateTree, Key extends keyof State>(
 }
 
 export interface RecordStoreState<T> {
-	[key: string]: T | undefined;
+	[key: string | number]: T | undefined;
 }
 
 export class RecordStore<T> extends Store<RecordStoreState<T>> {}

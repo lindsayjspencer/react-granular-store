@@ -226,5 +226,3 @@ const UserDetails = ({ id }: { id: string }) => {
   );
 };
 ```
-
-Note: The `noUncheckedIndexedAccess` tsconfig option is required when using `RecordStore` otherwise the type returned will be `T` instead of `T | undefined`.
