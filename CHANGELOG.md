@@ -1,5 +1,11 @@
 # react-granular-store
 
+## 0.0.8
+
+### Patch Changes
+
+- 32d662e: RecordStore type variants for hooks
+
 ## 0.0.7
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "react-granular-store",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Granular react store for subscribing to specific parts of a state tree",
   "keywords": [
     "react",
@@ -11,7 +11,7 @@
     "hooks",
     "subscribe",
     "useState",
-	"front-end"
+    "front-end"
   ],
   "homepage": "https://github.com/lindsayjspencer/react-granular-store#readme",
   "repository": {
