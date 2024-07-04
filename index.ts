@@ -14,7 +14,7 @@ const defaultOptions: Required<StoreOptions<StateTree>> = {
 
 export type SetStateArgument<T> = T | ((prev: T) => T);
 export default class Store<State extends StateTree> {
-	public state: State;
+	private state: State;
 	private newState: Map<keyof State, State[keyof State]> = new Map();
 	private awaitingUpdate = false;
 	protected options = defaultOptions;
@@ -61,8 +61,7 @@ export default class Store<State extends StateTree> {
 
 	private _resolveNewValue<Key extends keyof State>(key: Key, newValue: SetStateArgument<State[Key]>) {
 		if (typeof newValue === 'function') {
-			const prevValue = this.getState(key);
-			return (newValue as (prev: State[Key]) => State[Key])(prevValue);
+			return (newValue as (prev: State[Key]) => State[Key])(this.getState(key));
 		}
 		return newValue;
 	}

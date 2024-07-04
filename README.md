@@ -28,7 +28,7 @@ export const App = () => {
 
 A store can be declared and exported from anywhere in your app. Accessing and updating the state is done using the `useStoreState` hook, which takes the store instance and the key of the state you want to access.
 
-Only components which access a key of the state through the provided hooks will update when that key is updated. This means you can have multiple components accessing different parts of the state, and only the components that use that part of the state will re-render when it changes.\
+Only components which access a key of the state through the provided hooks will update when that key is updated. This means you can have multiple components accessing different parts of the state, and only the components that use that part of the state will re-render when it changes.
 
 ### Options
 
@@ -95,7 +95,7 @@ class CustomStore extends Store<UserStoreState> {
 
 ### Runtime instantiation
 
-You can also instantiate a store at runtime, which can be useful if you need multiple instances of the same store. The component which instantiates the store does not need to re-render when the store is updated.
+You can also instantiate a store at runtime, which can be useful if you need multiple instances of the same store. The component which instantiates the store will not re-render when the store is updated.
 
 ```tsx
 import React, { useMemo, useContext } from 'react';
