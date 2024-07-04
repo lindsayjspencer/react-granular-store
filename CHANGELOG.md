@@ -1,5 +1,11 @@
 # react-granular-store
 
+## 0.0.5
+
+### Patch Changes
+
+- 2013c97: Add warning for use of noUncheckedIndexedAccess with RecordStore class
+
 ## 0.0.4
 
 ### Patch Changes
