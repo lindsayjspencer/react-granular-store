@@ -1,5 +1,11 @@
 # react-granular-store
 
+## 0.0.6
+
+### Patch Changes
+
+- 5cb4e3f: Small optimisations
+
 ## 0.0.5
 
 ### Patch Changes
