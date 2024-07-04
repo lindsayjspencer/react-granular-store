@@ -1,5 +1,11 @@
 # react-granular-store
 
+## 0.0.4
+
+### Patch Changes
+
+- aa51f8d: Added a setState callback function and the new RecordStore<T> subclass
+
 ## 0.0.3
 
 ### Patch Changes
