@@ -149,7 +149,7 @@ export function useStoreState<State extends StateTree, Key extends keyof State>(
 }
 
 export interface RecordStoreState<T> {
-	[key: string]: T;
+	[key: string]: T | undefined;
 }
 
 export class RecordStore<T> extends Store<RecordStoreState<T>> {}

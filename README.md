@@ -172,7 +172,7 @@ const Footer = () => {
 
 ### RecordStore&lt;T&gt;
 
-`RecordStore` is a subclass of `Store` that provides a more convenient way to manage state where the keys are not known but the state type is always the same. It still provides type checking but the return type is `T | undefined` instead of `T`.
+`RecordStore` is a subclass of `Store` that provides a more convenient way to manage state where the keys are not known but the state type is always the same. It still provides type checking but the return type is `T | undefined` instead of `T`. The key type is always `string | number`.
 
 It can be useful for managing a collection of items and subscribing to their updates.
 
