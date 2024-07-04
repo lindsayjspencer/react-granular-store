@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type StateTree = Record<string | number | symbol, any>;
@@ -13,6 +13,7 @@ const defaultOptions: Required<StoreOptions<StateTree>> = {
 	batchUpdates: false,
 };
 
+export type SetStateArgument<T> = T | ((prev: T) => T);
 export default class Store<State extends StateTree> {
 	protected state: State;
 	private newState: Map<keyof State, State[keyof State]> = new Map();
@@ -60,9 +61,18 @@ export default class Store<State extends StateTree> {
 		}
 	}
 
-	public setState<Key extends keyof State>(key: Key, newValue: State[Key]) {
+	private _resolveNewValue<Key extends keyof State>(key: Key, newValue: SetStateArgument<State[Key]>) {
+		if (typeof newValue === 'function') {
+			const prevValue = this.getState(key);
+			return (newValue as (prev: State[Key]) => State[Key])(prevValue);
+		}
+		return newValue;
+	}
+
+	public setState<Key extends keyof State>(key: Key, newValue: SetStateArgument<State[Key]>) {
+		const resolvedValue = this._resolveNewValue(key, newValue);
 		if (this.options.batchUpdates) {
-			this.newState.set(key, newValue);
+			this.newState.set(key, resolvedValue);
 			if (!this.awaitingUpdate) {
 				this.awaitingUpdate = true;
 				requestAnimationFrame(() => {
@@ -71,7 +81,7 @@ export default class Store<State extends StateTree> {
 				});
 			}
 		} else {
-			this._setState(key, newValue);
+			this._setState(key, resolvedValue);
 		}
 	}
 
@@ -112,14 +122,14 @@ export function useStoreValue<State extends StateTree, Key extends keyof State>(
 export function useStoreUpdate<State extends StateTree, Key extends keyof State>(
 	store: Store<State>,
 	key: Key,
-): (newValue: State[Key]) => void;
+): (newValue: SetStateArgument<State[Key]>) => void;
 export function useStoreUpdate<State extends StateTree, Key extends keyof State>(
 	store: Store<State> | null,
 	key: Key,
-): (newValue: State[Key]) => void;
+): (newValue: SetStateArgument<State[Key]>) => void;
 export function useStoreUpdate<State extends StateTree, Key extends keyof State>(store: Store<State> | null, key: Key) {
 	return useCallback(
-		(newValue: State[Key]) => {
+		(newValue: SetStateArgument<State[Key]>) => {
 			if (!store) return;
 			store.setState(key, newValue);
 		},
@@ -130,14 +140,20 @@ export function useStoreUpdate<State extends StateTree, Key extends keyof State>
 export function useStoreState<State extends StateTree, Key extends keyof State>(
 	store: Store<State>,
 	key: Key,
-): [State[Key], (newValue: State[Key]) => void];
+): [State[Key], (newValue: SetStateArgument<State[Key]>) => void];
 export function useStoreState<State extends StateTree, Key extends keyof State>(
 	store: Store<State> | null,
 	key: Key,
-): [State[Key] | null, (newValue: State[Key]) => void];
+): [State[Key] | null, (newValue: SetStateArgument<State[Key]>) => void];
 export function useStoreState<State extends StateTree, Key extends keyof State>(store: Store<State> | null, key: Key) {
 	const state = useStoreValue(store, key);
 	const updateState = useStoreUpdate(store, key);
 
 	return [state, updateState] as const;
 }
+
+interface RecordStoreState<T> {
+	[key: string]: T;
+}
+
+export class RecordStore<T> extends Store<RecordStoreState<T>> {}
