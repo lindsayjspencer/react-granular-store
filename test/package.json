@@ -1,0 +1,22 @@
+{
+  "name": "react-granular-store-test",
+  "version": "0.0.1",
+  "description": "Testing types",
+  "scripts": {
+    "test:types": "tsc --project ./types/tsconfig.json",
+    "test:runtime": "vitest",
+    "test": "pnpm run test:types && pnpm run test:runtime"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "react": "^18.3.1",
+    "react-granular-store": "link:..",
+    "type-testing": "^0.2.0",
+    "typescript": "^5.4.5",
+    "vite": "latest",
+    "vitest": "latest"
+  },
+  "dependencies": {
+    "@types/node": "^20.14.9"
+  }
+}

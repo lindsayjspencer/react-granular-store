@@ -21,6 +21,11 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/index.mjs",
+  "exports": {
+	"require": "./dist/index.js",
+	"import": "./dist/index.mjs",
+	"types": "./dist/index.d.ts"
+  },
   "scripts": {
     "build": "tsup index.ts --format cjs,esm --dts",
     "release": "pnpm run build && changeset publish",
