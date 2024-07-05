@@ -9,7 +9,7 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 defaults:
   run:
-    working-directory: react-granular-store
+    working-directory: package
 
 permissions:
   contents: write
@@ -33,7 +33,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          cwd: react-granular-store
+          cwd: package
           publish: pnpm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

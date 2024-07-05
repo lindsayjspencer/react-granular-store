@@ -1,5 +1,6 @@
+import { assert, expect, test } from 'vitest';
 import { Expect, Equal } from "type-testing";
-import { RecordStore, useStoreState, useStoreUpdate, useStoreValue } from "react-granular-store";
+import { RecordStore, useStoreState, useStoreUpdate, useStoreValue } from "../../package/dist";
 
 // Test RecordStore
 const recordStore = new RecordStore<number>({});
@@ -119,3 +120,42 @@ const AppWithNullStore = () => {
 		</div>
 	);
 }
+
+const familyStore = new RecordStore<{ name: string }>({
+	1: { name: 'John Doe' },
+	2: { name: 'Jane Doe' },
+	3: { name: 'John Smith' },
+	father: { name: 'Jacob Doe' },
+	mother: { name: 'Jenny Doe' },
+});
+
+test('RecordStore: getState with initial values', () => {
+	expect(familyStore.getState(2)).toStrictEqual({ name: 'Jane Doe' });
+	expect(familyStore.getState('father')).toStrictEqual({ name: 'Jacob Doe' });
+});
+
+test('RecordStore: getState with non-existing key', () => {
+	expect(familyStore.getState(4)).toBeUndefined();
+	expect(familyStore.getState('non-existing')).toBeUndefined();
+});
+
+test('RecordStore: setState directly and getState', () => {
+	familyStore.setState(2, { name: 'Jane Smith' });
+	expect(familyStore.getState(2)).toStrictEqual({ name: 'Jane Smith' });
+	familyStore.setState('father', { name: 'Jacob Smith' });
+	expect(familyStore.getState('father')).toStrictEqual({ name: 'Jacob Smith' });
+});
+
+test('RecordStore: setState with function', () => {
+	familyStore.setState(2, (current) => ({ name: current?.name + ' Smith' }));
+	expect(familyStore.getState(2)).toStrictEqual({ name: 'Jane Smith Smith' });
+	familyStore.setState('father', (current) => ({ name: current?.name + ' Smith' }));
+	expect(familyStore.getState('father')).toStrictEqual({ name: 'Jacob Smith Smith' });
+});
+
+test('RecordStore: setState with non-existing key', () => {
+	familyStore.setState(4, { name: 'John Smith' });
+	expect(familyStore.getState(4)).toStrictEqual({ name: 'John Smith' });
+	familyStore.setState('mother', { name: 'Jenny Smith' });
+	expect(familyStore.getState('mother')).toStrictEqual({ name: 'Jenny Smith' });
+});

@@ -17,8 +17,8 @@ jobs:
           node-version: 20.x
 
       - run: pnpm install --frozen-lockfile
-        working-directory: react-granular-store
+        working-directory: package
       - run: pnpm run lint && pnpm run build
-        working-directory: react-granular-store
+        working-directory: package
       - run: pnpm install --frozen-lockfile && pnpm run test
         working-directory: test

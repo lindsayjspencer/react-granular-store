@@ -1,5 +1,6 @@
+import { assert, expect, test } from 'vitest';
 import { Expect, Equal } from "type-testing";
-import Store, { useStoreState, useStoreUpdate, useStoreValue } from "react-granular-store";
+import Store, { useStoreState, useStoreUpdate, useStoreValue } from "../../package/dist";
 
 // Test Store
 const simpleStore = new Store({
@@ -133,4 +134,28 @@ const AppWithNullStore = () => {
 		</div>
 	);
 }
+
+const store = new Store({
+	count: 0,
+	name: 'John Doe',
+});
+
+test('Store: getState with initial values', () => {
+	expect(store.getState('count')).toBe(0);
+	expect(store.getState('name')).toBe('John Doe');
+});
+
+test('Store: setState directly and getState', () => {
+	store.setState('count', 1);
+	expect(store.getState('count')).toBe(1);
+	store.setState('name', 'Jane Doe');
+	expect(store.getState('name')).toBe('Jane Doe');
+});
+
+test('Store: setState with function', () => {
+	store.setState('count', (current) => current + 1);
+	expect(store.getState('count')).toBe(2);
+	store.setState('name', (current) => current + ' Doe');
+	expect(store.getState('name')).toBe('Jane Doe Doe');
+});
 
