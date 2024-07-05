@@ -28,7 +28,7 @@
   },
   "scripts": {
     "build": "tsup index.ts --format cjs,esm --dts",
-    "release": "pnpm run build && changeset publish",
+    "release": "pnpm run build && mv ../README.md ./ && changeset publish",
     "lint": "tsc"
   },
   "author": "Lindsay Spencer",
