@@ -1,5 +1,11 @@
 # react-granular-store
 
+## 0.0.11
+
+### Patch Changes
+
+- bc5a980: Restore readme
+
 ## 0.0.10
 
 ### Patch Changes
