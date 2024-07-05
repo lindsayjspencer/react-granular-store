@@ -33,6 +33,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
+          cwd: react-granular-store
           publish: pnpm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
