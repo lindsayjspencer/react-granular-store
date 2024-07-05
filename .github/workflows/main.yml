@@ -15,8 +15,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          cache: "pnpm"
 
-      - run: cd ./react-granular-store pnpm install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile
+        working-directory: react-granular-store
       - run: pnpm run lint && pnpm run build
-      - run: cd ../test && pnpm install --frozen-lockfile && pnpm run test
+        working-directory: react-granular-store
+      - run: pnpm install --frozen-lockfile && pnpm run test
+        working-directory: test
