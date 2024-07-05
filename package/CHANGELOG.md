@@ -1,5 +1,11 @@
 # react-granular-store
 
+## 0.0.10
+
+### Patch Changes
+
+- 409dfde: Update readme
+
 ## 0.0.9
 
 ### Patch Changes
