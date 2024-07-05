@@ -1,6 +1,6 @@
 import { assert, expect, test } from 'vitest';
 import { Expect, Equal } from "type-testing";
-import { RecordStore, useStoreState, useStoreUpdate, useStoreValue } from "../../package/dist";
+import { RecordStore, useStoreState, useStoreUpdate, useStoreValue } from "react-granular-store";
 
 // Test RecordStore
 const recordStore = new RecordStore<number>({});

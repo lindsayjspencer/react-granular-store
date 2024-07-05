@@ -1,6 +1,6 @@
 import { assert, expect, test } from 'vitest';
 import { Expect, Equal } from "type-testing";
-import Store, { useStoreState, useStoreUpdate, useStoreValue } from "../../package/dist";
+import Store, { useStoreState, useStoreUpdate, useStoreValue } from "react-granular-store";
 
 // Test Store
 const simpleStore = new Store({
