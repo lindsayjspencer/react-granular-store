@@ -78,7 +78,7 @@ class CustomStore extends Store<UserStoreState> {
     super(defaults);
 
     this.on('firstName', this._formatFullName);
-	this.on('lastName', this._formatFullName);
+    this.on('lastName', this._formatFullName);
   }
 
   private _formatFullName() {
