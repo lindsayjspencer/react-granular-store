@@ -123,6 +123,40 @@ export function useStoreValue<State extends StateTree, Key extends keyof State>(
 	return state;
 }
 
+export function useStoreValues<State extends StateTree, Keys extends (keyof State)[]>(
+	store: Store<State>,
+	keys: Keys,
+): { [K in Keys[number]]: State[K] };
+export function useStoreValues<State extends StateTree, Keys extends (keyof State)[]>(
+	store: Store<State> | null,
+	keys: Keys,
+): { [K in Keys[number]]: State[K] | null };
+export function useStoreValues<T>(store: RecordStore<T>, keys: string[]): { [K in string]: T | undefined };
+export function useStoreValues<T>(store: RecordStore<T> | null, keys: string[]): { [K in string]: T | undefined | null };
+export function useStoreValues<State extends StateTree, Keys extends (keyof State)[]>(store: Store<State> | null, keys: Keys) {
+	const [state, setState] = useState(() => {
+		if (!store) return null;
+		// this is the only way to construct the object without using reduce or any
+		const stateObject: Partial<{ [K in Keys[number]]: State[K] }> = {};
+		keys.forEach((key) => {
+			stateObject[key] = store.getState(key);
+		});
+		return stateObject as { [K in Keys[number]]: State[K] };
+	});
+
+	useEffect(() => {
+		if (!store) return;
+		const unsubscribe = keys.map((key) => store.subscribe(key, (newValue) => {
+			setState((prev) => {
+				if (!prev) return null;
+				return { ...prev, [key]: newValue };
+			});
+		}));
+		return () => unsubscribe.forEach((unsub) => unsub());
+	}, [store, keys]);
+	return state;
+}
+
 export function useStoreUpdate<State extends StateTree, Key extends keyof State>(
 	store: Store<State>,
 	key: Key,
