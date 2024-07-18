@@ -1,5 +1,11 @@
 # react-granular-store
 
+## 0.0.12
+
+### Patch Changes
+
+- 9e81905: Improve inference of store in hooks
+
 ## 0.0.11
 
 ### Patch Changes
