@@ -14,7 +14,7 @@ const defaultOptions: Required<StoreOptions<StateTree>> = {
 
 export type SetStateArgument<T> = T | ((prev: T) => T);
 export default class Store<State extends StateTree> {
-	private state: State;
+	public state: State;
 	private newState: Map<keyof State, State[keyof State]> = new Map();
 	private awaitingUpdate = false;
 	protected options = defaultOptions;
@@ -95,12 +95,6 @@ export default class Store<State extends StateTree> {
 	}
 }
 
-export interface RecordStoreState<T> {
-	[key: string | number]: T | undefined;
-}
-
-export class RecordStore<T> extends Store<RecordStoreState<T>> {}
-
 export function useStoreValue<State extends StateTree, Key extends keyof State>(
 	store: Store<State>,
 	key: Key,
@@ -109,8 +103,6 @@ export function useStoreValue<State extends StateTree, Key extends keyof State>(
 	store: Store<State> | null,
 	key: Key,
 ): State[Key] | null;
-export function useStoreValue<T>(store: RecordStore<T>, key: string | number): T | undefined;
-export function useStoreValue<T>(store: RecordStore<T> | null, key: string | number): T | undefined | null;
 export function useStoreValue<State extends StateTree, Key extends keyof State>(store: Store<State> | null, key: Key) {
 	const [state, setState] = useState(store?.getState(key) ?? null);
 
@@ -123,40 +115,6 @@ export function useStoreValue<State extends StateTree, Key extends keyof State>(
 	return state;
 }
 
-export function useStoreValues<State extends StateTree, Keys extends (keyof State)[]>(
-	store: Store<State>,
-	keys: Keys,
-): { [K in Keys[number]]: State[K] };
-export function useStoreValues<State extends StateTree, Keys extends (keyof State)[]>(
-	store: Store<State> | null,
-	keys: Keys,
-): { [K in Keys[number]]: State[K] | null };
-export function useStoreValues<T>(store: RecordStore<T>, keys: string[]): { [K in string]: T | undefined };
-export function useStoreValues<T>(store: RecordStore<T> | null, keys: string[]): { [K in string]: T | undefined | null };
-export function useStoreValues<State extends StateTree, Keys extends (keyof State)[]>(store: Store<State> | null, keys: Keys) {
-	const [state, setState] = useState(() => {
-		if (!store) return null;
-		// this is the only way to construct the object without using reduce or any
-		const stateObject: Partial<{ [K in Keys[number]]: State[K] }> = {};
-		keys.forEach((key) => {
-			stateObject[key] = store.getState(key);
-		});
-		return stateObject as { [K in Keys[number]]: State[K] };
-	});
-
-	useEffect(() => {
-		if (!store) return;
-		const unsubscribe = keys.map((key) => store.subscribe(key, (newValue) => {
-			setState((prev) => {
-				if (!prev) return null;
-				return { ...prev, [key]: newValue };
-			});
-		}));
-		return () => unsubscribe.forEach((unsub) => unsub());
-	}, [store, keys]);
-	return state;
-}
-
 export function useStoreUpdate<State extends StateTree, Key extends keyof State>(
 	store: Store<State>,
 	key: Key,
@@ -165,8 +123,6 @@ export function useStoreUpdate<State extends StateTree, Key extends keyof State>
 	store: Store<State> | null,
 	key: Key,
 ): (newValue: SetStateArgument<State[Key]>) => void;
-export function useStoreUpdate<T>(store: RecordStore<T>, key: string | number): (newValue: SetStateArgument<T | undefined>) => void;
-export function useStoreUpdate<T>(store: RecordStore<T> | null, key: string | number): (newValue: SetStateArgument<T | undefined>) => void;
 export function useStoreUpdate<State extends StateTree, Key extends keyof State>(store: Store<State> | null, key: Key) {
 	return useCallback(
 		(newValue: SetStateArgument<State[Key]>) => {
@@ -185,11 +141,15 @@ export function useStoreState<State extends StateTree, Key extends keyof State>(
 	store: Store<State> | null,
 	key: Key,
 ): [State[Key] | null, (newValue: SetStateArgument<State[Key]>) => void];
-export function useStoreState<T>(store: RecordStore<T>, key: string | number): [T | undefined, (newValue: SetStateArgument<T | undefined>) => void];
-export function useStoreState<T>(store: RecordStore<T> | null, key: string | number): [T | undefined | null, (newValue: SetStateArgument<T | undefined>) => void];
 export function useStoreState<State extends StateTree, Key extends keyof State>(store: Store<State> | null, key: Key) {
 	const state = useStoreValue(store, key);
 	const updateState = useStoreUpdate(store, key);
 
 	return [state, updateState] as const;
 }
+
+export interface RecordStoreState<T> {
+	[key: string | number]: T | undefined;
+}
+
+export class RecordStore<T> extends Store<RecordStoreState<T>> {}

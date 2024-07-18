@@ -1,6 +1,32 @@
-import { assert, expect, test } from 'vitest';
+import { expect, test } from 'vitest';
 import { Expect, Equal } from "type-testing";
 import Store, { useStoreState, useStoreUpdate, useStoreValue } from "react-granular-store";
+
+type ExtendedStoreState = {
+	data?: string;
+	isLoading: boolean;
+	lastUpdated: Date;
+};
+
+class ExtendedStore extends Store<ExtendedStoreState> {
+	constructor() {
+		super({
+			isLoading: false,
+			lastUpdated: new Date(),
+		});
+
+		this.on('data', () => {
+			this.setState('lastUpdated', new Date());
+		});
+	}
+
+	public updateData = (data: string) => {
+		this.setState('data', data);
+	};
+}
+
+const extendedStore = new ExtendedStore();
+
 
 // Test Store
 const simpleStore = new Store({
@@ -79,6 +105,15 @@ const App = () => {
 		});
 	};
 
+	// @ts-expect-error - should error because 'type' is not in the store
+	const type = useStoreValue(extendedStore, 'type');
+
+	const lastUpdated = useStoreValue(extendedStore, 'lastUpdated');
+	type TEST_REACT_STORE_USESTOREVALUE_EXTENDED = Expect<Equal<typeof lastUpdated, Date>>;
+
+	const [isLoading, setIsLoading] = useStoreState(extendedStore, 'isLoading');
+	type TEST_REACT_STORE_USESTORESTATE_EXTENDED_STATE = Expect<Equal<typeof isLoading, boolean>>;
+
 	return (
 		<div>
 			<button onClick={increment}>Increment</button>
@@ -95,6 +130,13 @@ const getStore = () => {
 	}
 	return null;
 };
+
+const getExtendedStore = () => {
+	if (Math.random() > 0.5) {
+		return extendedStore;
+	}
+	return null;
+}
 
 // Test with null store
 const AppWithNullStore = () => {
@@ -124,6 +166,16 @@ const AppWithNullStore = () => {
 			return (current ?? 0) + 1;
 		});
 	};
+
+	const extended = getExtendedStore();
+	// @ts-expect-error - should error because 'type' is not in the store
+	const type = useStoreValue(extended, 'type');
+
+	const lastUpdated = useStoreValue(extended, 'lastUpdated');
+	type TEST_REACT_STORE_USESTOREVALUE_EXTENDED = Expect<Equal<typeof lastUpdated, Date | null>>;
+
+	const [isLoading, setIsLoading] = useStoreState(extended, 'isLoading');
+	type TEST_REACT_STORE_USESTORESTATE_EXTENDED_STATE = Expect<Equal<typeof isLoading, boolean | null>>;
 
 	return (
 		<div>
