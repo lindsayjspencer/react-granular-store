@@ -1,5 +1,11 @@
 # react-granular-store
 
+## 0.0.13
+
+### Patch Changes
+
+- e5e9a10: Better typing for on/off and setState batching improvements
+
 ## 0.0.12
 
 ### Patch Changes
