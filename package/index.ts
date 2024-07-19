@@ -15,7 +15,9 @@ const defaultOptions: Required<StoreOptions<StateTree>> = {
 export type SetStateArgument<T> = T | ((prev: T) => T);
 export default class Store<State extends StateTree> {
 	public state: State;
-	private newState: Map<keyof State, State[keyof State]> = new Map();
+	private newState: {
+		[key in keyof State]?: State[key];
+	} = {};
 	private awaitingUpdate = false;
 	protected options = defaultOptions;
 
@@ -24,19 +26,21 @@ export default class Store<State extends StateTree> {
 		this.options = { ...this.options, ...options };
 	}
 
-	private callbacks: Map<keyof State, Set<(newValue: State[keyof State]) => void>> = new Map();
+	public callbacks: {
+		[key in keyof State]?: Set<(newValue: State[key]) => void>;
+	} = {};
 
-	protected on(key: keyof State, callback: (newValue: State[keyof State]) => void) {
-		const existingCallbacks = this.callbacks.get(key);
+	protected on<Key extends keyof State>(key: Key, callback: (newValue: State[Key]) => void) {
+		const existingCallbacks = this.callbacks[key];
 		if (existingCallbacks) {
 			existingCallbacks.add(callback);
 		} else {
-			this.callbacks.set(key, new Set([callback]));
+			this.callbacks[key] = new Set([callback]);
 		}
 	}
 
-	protected off(key: keyof State, callback: (newValue: State[keyof State]) => void) {
-		const existingCallbacks = this.callbacks.get(key);
+	protected off<Key extends keyof State>(key: Key, callback: (newValue: State[Key]) => void) {
+		const existingCallbacks = this.callbacks[key];
 		if (existingCallbacks) {
 			existingCallbacks.delete(callback);
 		}
@@ -53,43 +57,60 @@ export default class Store<State extends StateTree> {
 			return;
 		}
 		this.state[key] = newValue;
-		const existingCallbacks = this.callbacks.get(key);
+		const existingCallbacks = this.callbacks[key];
 		if (existingCallbacks) {
 			existingCallbacks.forEach((callback) => callback(newValue));
 		}
 	}
 
-	private _resolveNewValue<Key extends keyof State>(key: Key, newValue: SetStateArgument<State[Key]>) {
+	private _resolveNewValue<Key extends keyof State>(key: Key, newValue: SetStateArgument<State[Key]>, prevValue: State[Key]) {
 		if (typeof newValue === 'function') {
-			return (newValue as (prev: State[Key]) => State[Key])(this.getState(key));
+			return (newValue as (prev: State[Key]) => State[Key])(prevValue);
 		}
 		return newValue;
 	}
 
+	private keyExistsInNewState<Key extends keyof State, NewState extends State>(state: NewState[Key] | undefined, key: Key): state is NewState[Key] {
+		return this.newState.hasOwnProperty(key);
+	}
+
 	public setState<Key extends keyof State>(key: Key, newValue: SetStateArgument<State[Key]>) {
-		const resolvedValue = this._resolveNewValue(key, newValue);
 		if (this.options.batchUpdates) {
-			this.newState.set(key, resolvedValue);
+			const existingValue = this.newState[key];
+			// Really difficult to figure out a way to get these types to work. Key issue is that if the newState has a property set for
+			// this key, then it has already been resolved and we should use that value instead of the current state value for any further
+			// resolving. But the value of the property could still be undefined, so checking if it's undefined is not enough. So we need
+			// to pull out the value first and then use a type guard to tell TS that the value is not State[Key] | undefined. It was
+			// difficult to write the following if statement efficiently.
+			if (this.keyExistsInNewState(existingValue, key)) {
+				const resolvedValue = this._resolveNewValue(key, newValue, existingValue);
+				this.newState[key] = resolvedValue;
+			} else {
+				const resolvedValue = this._resolveNewValue(key, newValue, this.getState(key));
+				this.newState[key] = resolvedValue;
+			}
 			if (!this.awaitingUpdate) {
 				this.awaitingUpdate = true;
-				requestAnimationFrame(() => {
+				setTimeout(() => {
 					this.processNewState();
 					this.awaitingUpdate = false;
-				});
+				}, 0);
 			}
 		} else {
+			const resolvedValue = this._resolveNewValue(key, newValue, this.getState(key));
 			this._setState(key, resolvedValue);
 		}
 	}
 
 	private processNewState() {
-		this.newState.forEach((newValue, key) => {
-			this._setState(key, newValue);
+		// Cycle through the newState entries and set the state
+		Object.entries(this.newState).forEach(([key, newValue]) => {
+			this._setState(key as keyof State, newValue as State[keyof State]);
 		});
-		this.newState.clear();
+		this.newState = {};
 	}
 
-	public subscribe<Key extends keyof State>(key: Key, callback: (newValue: State[keyof State]) => void) {
+	public subscribe<Key extends keyof State>(key: Key, callback: (newValue: State[Key]) => void) {
 		this.on(key, callback);
 		return () => this.off(key, callback);
 	}

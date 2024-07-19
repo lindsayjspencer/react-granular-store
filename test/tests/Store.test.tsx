@@ -15,8 +15,17 @@ class ExtendedStore extends Store<ExtendedStoreState> {
 			lastUpdated: new Date(),
 		});
 
-		this.on('data', () => {
+		this.on('data', (data) => {
+			type TEST_STORE_ON_STRING = Expect<Equal<typeof data, string | undefined>>;
 			this.setState('lastUpdated', new Date());
+		});
+
+		this.on('isLoading', (isLoading) => {
+			type TEST_STORE_ON_BOOLEAN = Expect<Equal<typeof isLoading, boolean>>;
+		});
+
+		this.on('lastUpdated', (lastUpdated) => {
+			type TEST_STORE_ON_DATE = Expect<Equal<typeof lastUpdated, Date>>;
 		});
 	}
 
@@ -211,3 +220,27 @@ test('Store: setState with function', () => {
 	expect(store.getState('name')).toBe('Jane Doe Doe');
 });
 
+const batchedStore = new Store({
+	count: 0,
+	name: 'John Doe',
+}, {
+	batchUpdates: true,
+});
+
+test('Store: batched setState', async () => {
+	batchedStore.setState('count', (current) => {
+		expect(current).toBe(0);
+		return 1;
+	});
+	expect(batchedStore.getState('count')).toBe(0);
+	batchedStore.setState('count', (current) => {
+		expect(current).toBe(1);
+		return 2;
+	});
+	expect(batchedStore.getState('count')).toBe(0);
+	setTimeout(() => {
+		expect(batchedStore.getState('count')).toBe(2);
+	}, 0);
+
+	await new Promise((resolve) => setTimeout(resolve, 0));
+});
