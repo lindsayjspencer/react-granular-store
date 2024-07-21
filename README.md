@@ -11,10 +11,8 @@ const store = new Store({
   count: 0,
 });
 
-export const useCount = () => useStoreState(store, 'count');
-
 export const App = () => {
-  const [count, setCount] = useCount();
+  const [count, setCount] = useStoreState(store, 'count');
   const increment = () => setCount((prev) => prev + 1);
   return (
     <div>
@@ -28,7 +26,7 @@ export const App = () => {
 
 A store can be declared and exported from anywhere in your app. Accessing and updating the state is done using the `useStoreState` hook, which takes the store instance and the key of the state you want to access.
 
-Only components which access a key of the state through the provided hooks will update when that key is updated. This means you can have multiple components accessing different parts of the state, and only the components that use that part of the state will re-render when it changes.
+The provided hooks subscribe to changes in the store and will only re-render the component when the state they are subscribed to changes. `useStoreState` is a drop-in replacement for React's `useState` hook.
 
 ### Options
 
@@ -41,8 +39,15 @@ interface StoreOptions {
 }
 ```
 
-- `equalityFn`: A function that determines if the new value is equal to the old value. By default, it uses `oldValue === newValue`.
-- `batchUpdates`: If `true`, the state will be set asynchronously at the end of the current tick. If the state is set multiple times, the last value will be used. If a setState callback is used, the previous value will be consistent as the value won't actually change until the end of the current tick. When `false`, setting the state will run it's effects synchronously.
+#### equalityFn
+A function that determines if the new value is equal to the old value. By default, it uses `oldValue === newValue`.
+
+#### batchUpdates
+The internal state is always changed synchronously. But if `batchUpdates` is set to true, the effects are batched and run only once at the end of the tick. This means that if you use a callback to set the state, the previous value provided as an argument will be consistent in between multiple set state calls. In the basic usage example above, if the `increment` function were called multiple times in quick succession, the `prev` value would correctly increment as expected. `batchUpdates` is set to `false` by default.
+
+```
+Note: If you are using this store exclusively with React components and the provided hooks, there is no need to batch the updates, as React will batch the internal calls to setState for you.
+```
 
 ### Declaring a state interface
 
@@ -60,6 +65,51 @@ const userStore = new Store<UserStoreState>({});
 const user = userStore.getState('name');
 //    ^? string | undefined
 ```
+
+### Store#on(key, callback)
+
+You can listen to changes on a specific key of the state by using the `on` method. The callback will be called whenever the key is updated.
+
+```ts
+const userStore = new Store<UserStoreState>({
+  name: 'John Doe',
+  age: 30,
+});
+
+userStore.on('name', (name) => {
+  console.log(`Name changed to ${name}`);
+});
+
+userStore.setState('name', 'Jane Doe');
+
+// Console: Name changed to Jane Doe
+```
+
+### Store#getState(key)
+
+You can access the state directly by using the `getState` method. Even if `batchUpdates` is set to `true`, the value returned by `getState` will always be the latest value.
+
+```
+Note: Using this function inside a React component will not trigger a re-render when the state changes. Use the provided useStoreValue or useStoreState hooks to access the state instead.
+```
+
+### Store#setState(key, value)
+
+You can update the state by using the `setState` method. The value can be a new value or a callback that receives the previous value and returns the new value.
+
+```ts
+userStore.setState('age', 31);
+
+userStore.setState('age', (currentAge) => currentAge + 1);
+```
+
+### Store#off(key, callback)
+
+You can remove a listener by using the `off` method. The callback will no longer be called when the key is updated.
+
+### Store#subscribe(key, callback)
+
+A shortcut for `on`. Returns a function that can be called to remove the listener.
 
 ### Extend store class
 
@@ -226,3 +276,30 @@ const UserDetails = ({ id }: { id: string }) => {
   );
 };
 ```
+
+### Gotchas
+
+#### Using a function as the state value
+If your type of state is a function, using a callback to update the state will not work as expected. If `setState` receives a function as the value, it will attempt to call it with the previous value as an argument, instead of saving that function as the new value. This limitation also exists in React's useState hook. As a workaround, you can use a function that returns a function.
+
+```ts
+const store = new Store({
+  doSomething: () => {
+	console.log('Doing something');
+  },
+});
+
+store.setState('doSomething', () => {
+  console.log('Doing something else');
+});
+
+// This will not work as expected
+
+store.setState('doSomething', () => () => {
+  console.log('Doing something else');
+});
+
+// This works because the return value is a function
+```
+
+#### 

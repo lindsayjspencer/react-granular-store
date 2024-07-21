@@ -228,19 +228,35 @@ const batchedStore = new Store({
 });
 
 test('Store: batched setState', async () => {
+	batchedStore.on('count', (count) => {
+		expect(count).toBe(2);
+	});
 	batchedStore.setState('count', (current) => {
 		expect(current).toBe(0);
 		return 1;
 	});
-	expect(batchedStore.getState('count')).toBe(0);
+	expect(batchedStore.getState('count')).toBe(1);
 	batchedStore.setState('count', (current) => {
 		expect(current).toBe(1);
 		return 2;
 	});
-	expect(batchedStore.getState('count')).toBe(0);
-	setTimeout(() => {
-		expect(batchedStore.getState('count')).toBe(2);
-	}, 0);
+	expect(batchedStore.getState('count')).toBe(2);
+
+	await new Promise((resolve) => setTimeout(resolve, 0));
+});
+
+test('Store: batched setState never calls on', async () => {
+	batchedStore.on('count', () => {
+		throw new Error('on should not be called');
+	});
+	batchedStore.setState('count', (current) => {
+		expect(current).toBe(2);
+		return 0;
+	});
+	batchedStore.setState('count', (current) => {
+		expect(current).toBe(0);
+		return 2;
+	});
 
 	await new Promise((resolve) => setTimeout(resolve, 0));
 });
