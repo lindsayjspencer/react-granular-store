@@ -1,5 +1,11 @@
 # react-granular-store
 
+## 0.0.15
+
+### Patch Changes
+
+- dfbc80f: Improve readme
+
 ## 0.0.14
 
 ### Patch Changes
