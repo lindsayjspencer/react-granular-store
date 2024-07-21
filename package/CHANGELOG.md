@@ -1,5 +1,11 @@
 # react-granular-store
 
+## 0.0.14
+
+### Patch Changes
+
+- c233879: Refactor batched updates
+
 ## 0.0.13
 
 ### Patch Changes
