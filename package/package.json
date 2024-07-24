@@ -1,50 +1,50 @@
 {
-  "name": "react-granular-store",
-  "version": "0.0.15",
-  "description": "Granular react store for subscribing to specific parts of a state tree",
-  "keywords": [
-    "react",
-    "store",
-    "state",
-    "granular",
-    "manager",
-    "hooks",
-    "subscribe",
-    "useState",
-    "front-end"
-  ],
-  "homepage": "https://github.com/lindsayjspencer/react-granular-store#readme",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/lindsayjspencer/react-granular-store"
-  },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "module": "dist/index.mjs",
-  "exports": {
-    "require": "./dist/index.js",
-    "import": "./dist/index.mjs",
-    "types": "./dist/index.d.ts"
-  },
-  "scripts": {
-    "build": "tsup index.ts --format cjs,esm --dts",
-    "release": "pnpm run build && mv ../README.md ./ && changeset publish",
-    "lint": "tsc"
-  },
-  "author": "Lindsay Spencer",
-  "private": false,
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
-  "license": "MIT",
-  "devDependencies": {
-    "@changesets/cli": "^2.27.5",
-    "@types/react": "^18.3.3",
-    "tsup": "^8.1.0",
-    "typescript": "^5.4.5"
-  },
-  "dependencies": {
-    "react": "^18.3.1"
-  }
+	"name": "react-granular-store",
+	"version": "0.0.15",
+	"description": "Granular react store for subscribing to specific parts of a state tree",
+	"keywords": [
+		"react",
+		"store",
+		"state",
+		"granular",
+		"manager",
+		"hooks",
+		"subscribe",
+		"useState",
+		"front-end"
+	],
+	"homepage": "https://github.com/lindsayjspencer/react-granular-store#readme",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/lindsayjspencer/react-granular-store"
+	},
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"module": "dist/index.mjs",
+	"exports": {
+		"require": "./dist/index.js",
+		"import": "./dist/index.mjs",
+		"types": "./dist/index.d.ts"
+	},
+	"scripts": {
+		"build": "tsup index.ts --format cjs,esm --dts",
+		"release": "pnpm run build && mv ../README.md ./ && changeset publish",
+		"lint": "eslint ."
+	},
+	"author": "Lindsay Spencer",
+	"private": false,
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org/"
+	},
+	"license": "MIT",
+	"devDependencies": {
+		"@changesets/cli": "^2.27.5",
+		"@types/react": "^18.3.3",
+		"tsup": "^8.1.0",
+		"typescript": "^5.4.5"
+	},
+	"dependencies": {
+		"react": "^18.3.1"
+	}
 }
