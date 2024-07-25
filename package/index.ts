@@ -1,5 +1,6 @@
-import { Key, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type StateTree = Record<string | number | symbol, any>;
 
 export interface StoreOptions<State extends StateTree> {
@@ -79,7 +80,7 @@ export default class Store<State extends StateTree> {
 			this.resolveDeferredState();
 			this.awaitingUpdate = false;
 		}, 0);
-	}
+	};
 
 	public setState<Key extends keyof State>(key: Key, newValue: SetStateArgument<State[Key]>) {
 		const resolvedValue = this._resolveNewValue(key, newValue);
