@@ -22,14 +22,13 @@
 	"types": "dist/index.d.ts",
 	"module": "dist/index.mjs",
 	"exports": {
+		"types": "./dist/index.d.ts",
 		"require": "./dist/index.js",
-		"import": "./dist/index.mjs",
-		"types": "./dist/index.d.ts"
+		"import": "./dist/index.mjs"
 	},
 	"scripts": {
 		"build": "tsup index.ts --format cjs,esm --dts",
-		"release": "pnpm run build && mv ../README.md ./ && changeset publish",
-		"lint": "eslint ."
+		"release": "pnpm run build && mv ../README.md ./ && changeset publish"
 	},
 	"author": "Lindsay Spencer",
 	"private": false,
@@ -39,15 +38,10 @@
 	},
 	"license": "MIT",
 	"devDependencies": {
-		"@changesets/cli": "^2.27.5",
-		"@eslint/js": "^9.7.0",
-		"@types/react": "^18.3.3",
-		"eslint": "9.x",
-		"eslint-plugin-react": "^7.35.0",
-		"globals": "^15.8.0",
-		"tsup": "^8.1.0",
-		"typescript": "^5.4.5",
-		"typescript-eslint": "^7.17.0"
+		"@changesets/cli": "^2.27.9",
+		"@types/react": "^18.3.11",
+		"tsup": "^8.3.0",
+		"typescript": "^5.6.2"
 	},
 	"dependencies": {
 		"react": "^18.3.1"
