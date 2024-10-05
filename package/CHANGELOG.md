@@ -1,5 +1,11 @@
 # react-granular-store
 
+## 0.0.16
+
+### Patch Changes
+
+- fc37823: Comments and more logical order of functions in main class
+
 ## 0.0.15
 
 ### Patch Changes
