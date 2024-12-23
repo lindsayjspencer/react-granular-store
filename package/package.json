@@ -1,6 +1,6 @@
 {
 	"name": "react-granular-store",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Granular react store for subscribing to specific parts of a state tree",
 	"keywords": [
 		"react",
