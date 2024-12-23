@@ -1,5 +1,11 @@
 # react-granular-store
 
+## 0.1.0
+
+### Minor Changes
+
+- 01736f6: Update react compatibility, update tests to use react 19, make react a peer dependency
+
 ## 0.0.16
 
 ### Patch Changes
