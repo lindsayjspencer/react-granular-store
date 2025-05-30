@@ -33,7 +33,7 @@ jobs:
         run: ls -la
       - name: Create Release Pull Request or Publish
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v1.5.1
         with:
           cwd: package
           publish: pnpm run release
