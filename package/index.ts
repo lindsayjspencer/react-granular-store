@@ -155,7 +155,13 @@ export function useStoreValue<State extends StateTree, Key extends keyof State>(
 	const [state, setState] = useState(store?.getState(key) ?? null);
 
 	useEffect(() => {
-		if (!store) return;
+		if (!store) {
+			setState(null);
+			return;
+		}
+		// Set the initial state
+		setState(store.getState(key));
+		// Subscribe to the store for updates
 		const unsubscribe = store.subscribe(key, setState);
 		return () => unsubscribe();
 	}, [store, key]);
