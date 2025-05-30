@@ -29,6 +29,8 @@ jobs:
           node-version: 20.x
 
       - run: pnpm install --frozen-lockfile
+      - name: List files in working directory
+        run: ls -la
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1
