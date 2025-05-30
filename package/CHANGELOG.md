@@ -1,5 +1,11 @@
 # react-granular-store
 
+## 0.1.2
+
+### Patch Changes
+
+- 5724754: Changing the store should update the state
+
 ## 0.1.1
 
 ### Patch Changes
