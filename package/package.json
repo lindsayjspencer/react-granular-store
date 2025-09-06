@@ -28,7 +28,8 @@
 	},
 	"scripts": {
 		"build": "tsup",
-		"release": "pnpm run build && mv ../README.md ./ && changeset publish"
+		"dev": "tsup --watch",
+		"prepublishOnly": "pnpm run build"
 	},
 	"author": "Lindsay Spencer",
 	"private": false,

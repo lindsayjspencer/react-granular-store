@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    /* Shared compiler settings for this monorepo */
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "noUncheckedIndexedAccess": true,
+    /* test builds don't emit JS during type-checking runs */
+    "noEmit": true,
+    /* avoid type collisions from dependencies during test runs */
+    "skipLibCheck": true
+  }
+}

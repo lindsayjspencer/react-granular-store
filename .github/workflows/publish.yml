@@ -7,10 +7,6 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
-defaults:
-  run:
-    working-directory: package
-
 permissions:
   contents: write
   pull-requests: write
@@ -27,16 +23,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.x
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
 
       - run: pnpm install --frozen-lockfile
-      - name: List files in working directory
-        run: ls -la
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1.5.1
         with:
-          cwd: package
           publish: pnpm run release
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
