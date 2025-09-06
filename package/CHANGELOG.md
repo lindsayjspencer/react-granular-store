@@ -1,5 +1,11 @@
 # react-granular-store
 
+## 0.2.0
+
+### Minor Changes
+
+- 4ecf791: Fixed setting a function as a piece of state
+
 ## 0.1.2
 
 ### Patch Changes
