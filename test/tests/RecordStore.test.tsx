@@ -1,6 +1,6 @@
 import { assert, expect, test } from 'vitest';
-import { Expect, Equal } from "type-testing";
-import { RecordStore, useStoreState, useStoreUpdate, useStoreValue } from "react-granular-store";
+import { Expect, Equal } from 'type-testing';
+import { RecordStore, useStoreState, useStoreUpdate, useStoreValue } from 'react-granular-store';
 
 // Test RecordStore
 const recordStore = new RecordStore<number>({});
@@ -73,7 +73,7 @@ const App = () => {
 			<button onClick={() => isolatedSetCount((current) => (current ?? 0) + 1)}>Increment isolated</button>
 		</div>
 	);
-}
+};
 
 const getStore = () => {
 	if (Math.random() > 0.5) {
@@ -119,7 +119,7 @@ const AppWithNullStore = () => {
 			<button onClick={() => isolatedSetCount((current) => (current ?? 0) + 1)}>Increment isolated</button>
 		</div>
 	);
-}
+};
 
 const familyStore = new RecordStore<{ name: string }>({
 	1: { name: 'John Doe' },

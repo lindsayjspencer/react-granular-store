@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
-import { Expect, Equal } from "type-testing";
-import Store, { useStoreState, useStoreUpdate, useStoreValue } from "react-granular-store";
+import { Expect, Equal } from 'type-testing';
+import Store, { useStoreState, useStoreUpdate, useStoreValue } from 'react-granular-store';
 
 type ExtendedStoreState = {
 	data?: string;
@@ -35,7 +35,6 @@ class ExtendedStore extends Store<ExtendedStoreState> {
 }
 
 const extendedStore = new ExtendedStore();
-
 
 // Test Store
 const simpleStore = new Store({
@@ -91,19 +90,13 @@ const App = () => {
 	const [count, setCount] = useStoreState(simpleStore, 'count');
 	type TEST_REACT_STORE_USESTORESTATE_STATE = Expect<Equal<typeof count, number>>;
 	type TEST_REACT_STORE_USESTORESTATE_SETSTATE = Expect<
-		Equal<
-			typeof setCount,
-			(newValue: (number) | ((oldValue: number) => number)) => void
-		>
+		Equal<typeof setCount, (newValue: number | ((oldValue: number) => number)) => void>
 	>;
 	const isolatedCount = useStoreValue(simpleStore, 'count');
 	type TEST_REACT_STORE_USESTOREVALUE = Expect<Equal<typeof isolatedCount, number>>;
 	const isolatedSetCount = useStoreUpdate(simpleStore, 'count');
 	type TEST_REACT_STORE_USESTOREUPDATE = Expect<
-		Equal<
-			typeof isolatedSetCount,
-			(newValue: (number) | ((oldValue: number) => number)) => void
-		>
+		Equal<typeof isolatedSetCount, (newValue: number | ((oldValue: number) => number)) => void>
 	>;
 
 	const increment = () => {
@@ -131,7 +124,7 @@ const App = () => {
 			<button onClick={() => isolatedSetCount((current) => (current ?? 0) + 1)}>Increment isolated</button>
 		</div>
 	);
-}
+};
 
 const getStore = () => {
 	if (Math.random() > 0.5) {
@@ -145,7 +138,7 @@ const getExtendedStore = () => {
 		return extendedStore;
 	}
 	return null;
-}
+};
 
 // Test with null store
 const AppWithNullStore = () => {
@@ -153,19 +146,13 @@ const AppWithNullStore = () => {
 	const [count, setCount] = useStoreState(store, 'count');
 	type TEST_REACT_STORE_USESTORESTATE_NULL_STATE = Expect<Equal<typeof count, number | null>>;
 	type TEST_REACT_STORE_USESTORESTATE_NULL_SETSTATE = Expect<
-		Equal<
-			typeof setCount,
-			(newValue: (number) | ((oldValue: number) => number)) => void
-		>
+		Equal<typeof setCount, (newValue: number | ((oldValue: number) => number)) => void>
 	>;
 	const isolatedCount = useStoreValue(store, 'count');
 	type TEST_REACT_STORE_USESTOREVALUE_NULL = Expect<Equal<typeof isolatedCount, number | null>>;
 	const isolatedSetCount = useStoreUpdate(store, 'count');
 	type TEST_REACT_STORE_USESTOREUPDATE_NULL = Expect<
-		Equal<
-			typeof isolatedSetCount,
-			(newValue: (number) | ((oldValue: number) => number)) => void
-		>
+		Equal<typeof isolatedSetCount, (newValue: number | ((oldValue: number) => number)) => void>
 	>;
 
 	const increment = () => {
@@ -194,7 +181,7 @@ const AppWithNullStore = () => {
 			<button onClick={() => isolatedSetCount((current) => (current ?? 0) + 1)}>Increment isolated</button>
 		</div>
 	);
-}
+};
 
 const store = new Store({
 	count: 0,
@@ -220,12 +207,15 @@ test('Store: setState with function', () => {
 	expect(store.getState('name')).toBe('Jane Doe Doe');
 });
 
-const batchedStore = new Store({
-	count: 0,
-	name: 'John Doe',
-}, {
-	batchUpdates: true,
-});
+const batchedStore = new Store(
+	{
+		count: 0,
+		name: 'John Doe',
+	},
+	{
+		batchUpdates: true,
+	},
+);
 
 test('Store: batched setState', async () => {
 	batchedStore.on('count', (count) => {

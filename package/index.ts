@@ -152,17 +152,18 @@ export function useStoreValue<State extends StateTree, Key extends keyof State>(
 	key: Key,
 ): State[Key] | null;
 export function useStoreValue<State extends StateTree, Key extends keyof State>(store: Store<State> | null, key: Key) {
-	const [state, setState] = useState(store?.getState(key) ?? null);
+	// Use lazy initializer so a function value is stored as-is, not treated as an initializer
+	const [state, setState] = useState(() => store?.getState(key) ?? null);
 
 	useEffect(() => {
 		if (!store) {
-			setState(null);
+			setState(() => null);
 			return;
 		}
-		// Set the initial state
-		setState(store.getState(key));
+		// Set the initial state (wrap so function values are not treated as updaters)
+		setState(() => store.getState(key));
 		// Subscribe to the store for updates
-		const unsubscribe = store.subscribe(key, setState);
+		const unsubscribe = store.subscribe(key, (next) => setState(() => next));
 		return () => unsubscribe();
 	}, [store, key]);
 
